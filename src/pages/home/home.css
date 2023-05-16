@@ -1,0 +1,23 @@
+.homeContainer{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    background-image: url("./logo.svg") ;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    
+  }
+
+  .bg-img{
+    background-image: url("./graylogo.png") ;
+    background-repeat: no-repeat;
+    background-position: top right;
+    
+  }
+  
+  .homeTitle{
+    width: 1024px;
+    font-size: 20px;
+  }
