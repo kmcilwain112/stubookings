@@ -135,3 +135,15 @@
     max-height: 300px; 
     float: right;
   }
+  .imgbox{
+    background-image: url('./graylogo.svg');
+    height: 0;
+    width: 20%;
+    padding-bottom: 20%;
+    margin-top: -50px;
+    margin-left: 800px;
+    z-index: 1;
+    position: absolute;
+    
+  }
+  

@@ -3,15 +3,16 @@ import "./header.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCalendarDays, faClock, faCompactDisc, faMicrophoneLines} from "@fortawesome/free-solid-svg-icons"
 import {useState} from 'react'
-
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import {format} from "date-fns"
 import { DateRange } from "react-date-range";
+import { useNavigate } from "react-router-dom";
+
 
 const Header = ({type}) => {
     const [openDate, setOpenDate] = useState(false);
-    
+    const [location, setLocation] = useState("");   
     const [date, setDate] = useState([
         {
           startDate: new Date(),
@@ -23,19 +24,22 @@ const Header = ({type}) => {
     const [options, setOptions] = useState({
         hours: 1,
     });
+    const navigate = useNavigate();
     const handleOption = (name, operation) =>{
         setOptions(prev=>{return {
             ...prev, [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
-        }
-
-        }
-
-        )
+        }})}
+    const handleSearch = ()=>{
+      navigate("/studios", {state:{location, date, options}})
     }
   return (
     <div className='header'>
         <div className={type === "list" ? "headerContainer listMode" : "headerContainer"}>
+        { type !== 'list' && <div className="imgbox"> 
+            
+            </div>}
         <div className='headerList'>
+        
             <div className='headerListItem active'>            
             <FontAwesomeIcon icon={faCalendarDays} />
             <span>Bookings</span>
@@ -49,9 +53,11 @@ const Header = ({type}) => {
             <span>Studios</span>
             </div>
             </div>
+            
             { type !== 'list' &&
                 <>
             <h1 className="headerTitle">Book your spot now</h1>
+            
             <p className='headerDesc'>
                 Book when you want, how you want with a free stubookings account
             </p>
@@ -60,7 +66,9 @@ const Header = ({type}) => {
             <div className='headerSearch'>
                 <div className='headerSearchItem'>
                     <FontAwesomeIcon icon= {faMicrophoneLines} className='headerIcon' />
-                    <input type='text' placeholder='Where are you located?' className='headerSearchInput'/>
+                    <input type='text' placeholder='Where are you located?' className='headerSearchInput'
+                    onChange={e=>setLocation(e.target.value)}
+                    />
                 </div>
                 <div className='headerSearchItem'>
                     <FontAwesomeIcon icon= {faCalendarDays} className='headerIcon' />
@@ -93,7 +101,7 @@ const Header = ({type}) => {
                         </div>
                     </div>}
                 </div>
-                <button className='headerBtn'>Search</button> 
+                <button className='headerBtn' onClick={handleSearch}>Search</button> 
             </div></>}
         </div>     
     </div>

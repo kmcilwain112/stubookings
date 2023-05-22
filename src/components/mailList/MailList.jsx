@@ -1,5 +1,6 @@
 import React from 'react'
 import "./mailList.css"
+import logo from './logo.svg'
 
 
 const MailList = () => {
@@ -9,10 +10,9 @@ const MailList = () => {
       <span className='mailDesc'>Sign Up Now</span>
       <div className="mailInputContainer">
         <input type='text' placeholder='Your email'></input>
-        <button>Subcribe</button>
-       
+        <button>Subcribe</button>        
       </div>
-     
+      <img src={logo} className="mailLogo" alt="logo" />
     </div>
   )
 }
