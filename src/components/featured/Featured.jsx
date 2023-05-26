@@ -1,8 +1,14 @@
 import React from 'react'
+import useFetch from '../../hooks/useFetch'
 import "./featured.css"
 const Featured = () => {
+  const { data, loading, error } = useFetch(
+    "/studios/countByCity?cities=Detroit,LA,Atlanta"
+  );
   return (
     <div className='featured'>
+      {loading ?  ("Loading please wait") : 
+      (<>
       <div className='featuredItem'>
       <img
           src="https://live.staticflickr.com/2596/3800707171_5cf00e8b4a_b.jpg"
@@ -11,7 +17,7 @@ const Featured = () => {
         />
       <div className="featuredTitles">
           <h1>Detroit</h1>
-          <h2>123 studios</h2>
+          <h2>{data[0]} studios</h2>
         </div>
       </div>
       <div className="featuredItem">
@@ -21,8 +27,8 @@ const Featured = () => {
           className="featuredImg"
         />
         <div className="featuredTitles">
-          <h1>Chicago</h1>
-          <h2>533 studios</h2>
+          <h1>Los Angeles</h1>
+          <h2>{data[1]}  studios</h2>
         </div>
       </div>
       <div className="featuredItem">
@@ -32,10 +38,10 @@ const Featured = () => {
           className="featuredImg"
         />
         <div className="featuredTitles">
-          <h1>New York</h1>
-          <h2>532 studios</h2>
+          <h1>Atlanta</h1>
+          <h2>{data[2]}  studios</h2>
         </div>
-      </div>
+        </div></>)}
     </div>
   )
 }

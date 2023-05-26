@@ -8,12 +8,16 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import {format} from "date-fns"
 import { DateRange } from "react-date-range";
 import { useNavigate } from "react-router-dom";
+import TimePicker from 'react-time-picker'
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
 
 
 const Header = ({type}) => {
     const [openDate, setOpenDate] = useState(false);
-    const [location, setLocation] = useState("");   
-    const [date, setDate] = useState([
+    const [value, onChange] = useState('10:00');
+    const [destination, setDestination] = useState("");   
+    const [dates, setDates] = useState([
         {
           startDate: new Date(),
           endDate: new Date(),
@@ -29,8 +33,8 @@ const Header = ({type}) => {
         setOptions(prev=>{return {
             ...prev, [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
         }})}
-    const handleSearch = ()=>{
-      navigate("/studios", {state:{location, date, options}})
+    const handleSearch = ()=>{    
+      navigate("/spaces", {state:{destination, dates, options}})
     }
   return (
     <div className='header'>
@@ -67,21 +71,21 @@ const Header = ({type}) => {
                 <div className='headerSearchItem'>
                     <FontAwesomeIcon icon= {faMicrophoneLines} className='headerIcon' />
                     <input type='text' placeholder='Where are you located?' className='headerSearchInput'
-                    onChange={e=>setLocation(e.target.value)}
+                    onChange={e=>setDestination(e.target.value)}
                     />
                 </div>
                 <div className='headerSearchItem'>
                     <FontAwesomeIcon icon= {faCalendarDays} className='headerIcon' />
-                    <span onClick={()=>setOpenDate(!openDate)}className='headerSearchText'>{`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
-                  date[0].endDate,
+                    <span onClick={()=>setOpenDate(!openDate)}className='headerSearchText'>{`${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
+                  dates[0].endDate,
                   "MM/dd/yyyy"
                 )}`}</span>
                     {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => setDates([item.selection])}
                     moveRangeOnFirstSelection={false}
-                    ranges={date}
+                    ranges={dates}
                     className="date"
                     minDate={new Date()}
                   />
@@ -93,11 +97,7 @@ const Header = ({type}) => {
                     {openOptions && <div className='options'>
                         <div className='optionItem'>
                             <span className="optionText">Hours</span>
-                            <button
-                            disabled={options.hours <= 1} 
-                             className="optionCounterButton" onClick={()=>handleOption("hours", "d")}>-</button>
-                            <span className="optionCounterNumber">{options.hours}</span>
-                            <button className="optionCounterButton" onClick={()=>handleOption("hours", "i")}>+</button>
+                            <TimePicker onChange={onChange} value={value} />
                         </div>
                     </div>}
                 </div>

@@ -1,22 +1,25 @@
+import { Link } from "react-router-dom";
 import "./searchItem.css";
 
-const SearchItem = () => {
+const SearchItem = ({item}) => {
   return (
     <div className="searchItem">
-      <img
-        src="https://res.cloudinary.com/soundbetter/image/upload/c_fill,f_auto,g_face:auto,h_630,q_90,w_1200/v1589492504/assets/photos/259010/8123A0BB-104A-4F38-9FDD-2CA7EA7EBA1F.jpg"
+      {item.photos && <img
+        src={item.photos[0]}
         alt=""
         className="siImg"
-      />
+      />}
       <div className="siDesc">
-        <h1 className="siTitle">TDE Studios</h1>
-        <span className="siDistance">2.1 miles away</span>
-        <span className="siTaxiOp">Engineer Included</span>
+        <h1 className="siTitle">{item.title}</h1>
+        <span className="siDistance">{item.distance} miles from center</span>
+        {item.engineerIncluded &&
+          <span className="siTaxiOp">Engineer Included</span>
+          }
         <span className="siSubtitle">
-          Studio A
+          {item.studio_name}
         </span>
         <span className="siFeatures">
-          Vocal Booth • Live Room • Kitchenette Access
+          {item.desc}
         </span>
         <span className="siCancelOp">Free cancellation </span>
         <span className="siCancelOpSubtitle">
@@ -24,14 +27,16 @@ const SearchItem = () => {
         </span>
       </div>
       <div className="siDetails">
-        <div className="siRating">
+        {item.rating && <div className="siRating">
           <span>Excellent</span>
           <button>8.9</button>
-        </div>
+        </div>}
         <div className="siDetailTexts">
-          <span className="siPrice">$112</span>
+          <span className="siPrice">${item.price}/hr</span>
           <span className="siTaxOp">Includes taxes and fees</span>
+          <Link to={`/spaces/${item._id}`}>
           <button className="siCheckButton">See availability</button>
+          </Link>
         </div>
       </div>
     </div>
