@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import "./space.css"
 import Navbar from '../../components/navbar/Navbar'
 import Header from '../../components/navbar/header/Header'
@@ -8,6 +8,8 @@ import MailList from '../../components/mailList/MailList'
 import {useState} from "react";
 import useFetch from '../../hooks/useFetch'
 import { useLocation } from 'react-router-dom'
+import { SearchContext } from '../../context/SearchContext'
+import dayjs from 'dayjs'
 
 const SpaceDtl = () => {
   const location = useLocation()
@@ -17,7 +19,29 @@ const SpaceDtl = () => {
   const { data, loading, error,reFetch } = useFetch(
     `/spaces/find/${id}`
   );
+  const {dates,startTime,endTime} = useContext(SearchContext);
   
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+  function dayDifference(date1, date2) {
+    const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+    const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
+    return diffDays;
+  }
+  
+  var duration = require('dayjs/plugin/duration')
+  dayjs.extend(duration)
+  function timeClac(time1,time2){
+    const t1 = dayjs(time1).format('h:mm a')
+    console.log(t1)
+    const t2 = dayjs(time2).format('h:mm a')
+    console.log(t2)
+    
+    return t2;
+  }
+  const hours = timeClac(startTime,endTime);
+  
+  console.log(startTime)
+
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);
@@ -67,7 +91,7 @@ const SpaceDtl = () => {
           <h1 className="hotelTitle">{data.title}</h1>
           <div className="hotelAdress">
             <FontAwesomeIcon icon={faLocationDot}/>
-            <span>   {data.city}</span>
+            <span>{data.city}</span>
             </div>
             <span className="hotelDistance">
               {data.distance} miles away
@@ -95,13 +119,12 @@ const SpaceDtl = () => {
               </p>
             </div>
             <div className="hotelDetailsPrice">
-              <h1>Perfect for a 9-night stay!</h1>
+              <h1>Zone out from {startTime} to {endTime}!</h1>
               <span>
-                Located in the real heart of Krakow, this property has an
-                excellent location score of 9.8!
+                The price listed below reflects full access to this space and other amenities. 
               </span>
               <h2>
-                <b>$945</b> (9 nights)
+                <b>${hours * data.price}</b> ({hours}{""}hours)
               </h2>
               <button>Reserve or Book Now!</button>
             </div>

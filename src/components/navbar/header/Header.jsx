@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import "./header.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCalendarDays, faClock, faCompactDisc, faMicrophoneLines} from "@fortawesome/free-solid-svg-icons"
@@ -8,15 +8,18 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import {format} from "date-fns"
 import { DateRange } from "react-date-range";
 import { useNavigate } from "react-router-dom";
-import TimePicker from 'react-time-picker'
-import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
+import { TimePicker } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
+import moment from 'moment';
+import { SearchContext } from '../../../context/SearchContext'
+
+
 
 
 const Header = ({type}) => {
     const [openDate, setOpenDate] = useState(false);
-    const [value, onChange] = useState('10:00');
     const [destination, setDestination] = useState("");   
+    const timeFormat ='h:mm a'   
     const [dates, setDates] = useState([
         {
           startDate: new Date(),
@@ -24,17 +27,32 @@ const Header = ({type}) => {
           key: "selection",
         },
       ]);
+     
+    const [value, setValue] = useState([]);     
     const [openOptions, setOpenOptions] = useState(false);
     const [options, setOptions] = useState({
         hours: 1,
     });
     const navigate = useNavigate();
+    
+    const onChange = (time, timeString) => {      
+      setValue(time);                        
+    };
+   
     const handleOption = (name, operation) =>{
         setOptions(prev=>{return {
             ...prev, [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
         }})}
-    const handleSearch = ()=>{    
-      navigate("/spaces", {state:{destination, dates, options}})
+    const {dispatch} = useContext(SearchContext)
+    var toObject = require('dayjs/plugin/toObject')
+    dayjs.extend(toObject)
+    const handleSearch = ()=>{ 
+      
+      const formattedStartTime = dayjs(value[0]).toObject();
+      const formattedEndTime = dayjs(value[1]).toObject();
+      dispatch({type:"NEW_SEARCH",payload:{destination,dates,startTime: formattedStartTime, endTime:formattedEndTime}})
+      navigate("/spaces", {state:{destination, dates, options,startTime: formattedStartTime, endTime:formattedEndTime}})
+      
     }
   return (
     <div className='header'>
@@ -92,14 +110,8 @@ const Header = ({type}) => {
                 )}
                 </div>
                 <div className='headerSearchItem'>
-                    <FontAwesomeIcon icon= {faClock} className='headerIcon' />
-                    <span onClick={()=>setOpenOptions(!openOptions)} className='headerSearchText'>{`${options.hours} Hours`}</span>
-                    {openOptions && <div className='options'>
-                        <div className='optionItem'>
-                            <span className="optionText">Hours</span>
-                            <TimePicker onChange={onChange} value={value} />
-                        </div>
-                    </div>}
+                <FontAwesomeIcon icon= {faClock} className='headerIcon'/>                    
+                     <TimePicker.RangePicker value={value}  minuteStep={15} use12Hours format= {timeFormat} onChange={onChange} />
                 </div>
                 <button className='headerBtn' onClick={handleSearch}>Search</button> 
             </div></>}
